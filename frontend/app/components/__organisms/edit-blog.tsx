@@ -30,22 +30,26 @@ export default function EditBlog() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4 mt-10">
+    <div className="bg-background p-6 rounded shadow-md w-full max-w-lg mx-auto text-foreground space-y-5 mt-10">
+      <h1 className="text-3xl font-bold">Edit Blog</h1>
+
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full border p-2"
         placeholder="Title"
+        className="w-full px-3 py-2 border rounded bg-background text-foreground"
       />
+
       <textarea
         value={summary}
         onChange={(e) => setSummary(e.target.value)}
-        className="w-full border p-2"
         placeholder="Summary"
+        className="w-full px-3 py-2 border rounded bg-background text-foreground"
       />
+
       <button
         onClick={handleUpdate}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
       >
         Save Changes
       </button>
