@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../api/axios.instance";
+import { getCookie } from "cookies-next";
 
 export type User = {
   _id: string;
@@ -25,12 +26,17 @@ export const useUserStore = create<Store>((set) => ({
 
   loadUser: async () => {
     const stored = localStorage.getItem("user");
+    const token = getCookie("token");
     if (stored) {
       set({ user: JSON.parse(stored) });
     }
 
     try {
-      const res = await axiosInstance.get("/auth/current-user");
+      const res = await axiosInstance.get("/auth/current-user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const user = res.data;
       localStorage.setItem("user", JSON.stringify(user));
       set({ user });

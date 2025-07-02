@@ -5,11 +5,12 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { axiosInstance } from "@/app/api/axios.instance";
-import { deleteCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 
 export default function SettingsModal({ onClose }: { onClose: () => void }) {
   const router = useRouter();
   const { user, setUser } = useUserStore();
+  const token = getCookie("token");
 
   const [fullName, setFullName] = useState(user?.fullName || "");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -21,7 +22,7 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
       if (imageFile) {
         const formData = new FormData();
         formData.append("file", imageFile);
-        console.log(formData)
+        console.log(formData);
         const res = await axiosInstance.post("/upload", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -36,7 +37,11 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
         image: imageUrl,
       });
 
-      const refreshed = await axiosInstance.get("/auth/current-user");
+      const refreshed = await axiosInstance.get("/auth/current-user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setUser(refreshed.data);
 
       onClose();
@@ -46,8 +51,7 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
   };
 
   const handleLogout = () => {
-
-    deleteCookie('token')
+    deleteCookie("token");
 
     router.push("/login");
   };
